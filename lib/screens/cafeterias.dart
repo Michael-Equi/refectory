@@ -29,8 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(FontAwesomeIcons.userCircle),
-            onPressed: () =>
-                Navigator.pushReplacementNamed(context, '/profile'),
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
           )
         ],
       ),
@@ -39,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-                '${user.displayName ?? "Guest"} has pushed the button this many times:'),
+                '${user?.displayName ?? "Guest"} has pushed the button this many times:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,

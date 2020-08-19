@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.all(5),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(top: 50, bottom: 50),
