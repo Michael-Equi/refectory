@@ -39,8 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '${user.displayName ?? "Anon"} have pushed the button this many times:',
-            ),
+                '${user.displayName ?? "Guest"} has pushed the button this many times:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,

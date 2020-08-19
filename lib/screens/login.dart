@@ -30,43 +30,54 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.all(2),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Container(
-                child: _logo,
-                width: 300,
-                height: 300,
-                padding: EdgeInsets.only(bottom: 50),
-              ),
-              LoginButton(
-                text: 'LOGIN WITH GOOGLE',
-                icon: FontAwesomeIcons.google,
-                color: Colors.black45,
-                loginMethod: auth.googleSignIn,
-              ),
-              FutureBuilder<Object>(
-                future: auth.appleSignInAvailable,
-                builder: (context, snapshot) {
-                  if (snapshot.data == true) {
-                    return AppleSignInButton(
-                      style: ButtonStyle.black,
-                      onPressed: () async {
-                        FirebaseUser user = await auth.appleSignIn();
-                        if (user != null) {
-                          Navigator.pushReplacementNamed(
-                              context, '/cafeterias');
-                        }
-                      },
-                    );
-                  }
-                },
-              ),
-              LoginButton(
-                  text: 'Continue as Guest', loginMethod: auth.anonLogin),
-            ]),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(5),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 50, bottom: 50),
+                  child: _logo,
+                  width: 400,
+                  height: 400,
+                ),
+                LoginButton(
+                  text: 'LOGIN WITH GOOGLE',
+                  icon: FontAwesomeIcons.google,
+                  color: Colors.black45,
+                  loginMethod: auth.googleSignIn,
+                ),
+                FutureBuilder<Object>(
+                  future: auth.appleSignInAvailable,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == true) {
+                      return Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: AppleSignInButton(
+                          style: ButtonStyle.black,
+                          cornerRadius: 8,
+                          onPressed: () async {
+                            FirebaseUser user = await auth.appleSignIn();
+                            if (user != null) {
+                              Navigator.pushReplacementNamed(
+                                  context, '/cafeterias');
+                            }
+                          },
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        width: 0,
+                        height: 0,
+                      );
+                    }
+                  },
+                ),
+                LoginButton(
+                    text: 'Continue as Guest', loginMethod: auth.anonLogin),
+              ]),
+        ),
       ),
     );
   }
@@ -85,7 +96,9 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(bottom: 20),
       child: FlatButton.icon(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         color: this.color,
         onPressed: () async {
           var user = await loginMethod();
