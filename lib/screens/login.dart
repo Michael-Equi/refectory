@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:refectory/services/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,29 +12,62 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final Widget _logo = SvgPicture.asset("assets/images/refectory-logo.svg");
-  final AuthService _auth = AuthService();
+  final AuthService auth = AuthService();
 
   @override
   void initState() {
     super.initState();
+    auth.getUser.then(
+      (user) {
+        if (user != null) {
+          Navigator.pushReplacementNamed(context, '/topics');
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              child: _logo,
-              width: 300,
-              height: 300,
-              padding: EdgeInsets.only(bottom: 50),
-            ),
-            LoginButton(
-                text: 'Continue as Guest', loginMethod: _auth.anonLogin),
-          ]),
+      body: Container(
+        padding: EdgeInsets.all(2),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                child: _logo,
+                width: 300,
+                height: 300,
+                padding: EdgeInsets.only(bottom: 50),
+              ),
+              LoginButton(
+                text: 'LOGIN WITH GOOGLE',
+                icon: FontAwesomeIcons.google,
+                color: Colors.black45,
+                loginMethod: auth.googleSignIn,
+              ),
+              FutureBuilder<Object>(
+                future: auth.appleSignInAvailable,
+                builder: (context, snapshot) {
+                  if (snapshot.data == true) {
+                    return AppleSignInButton(
+                      style: ButtonStyle.black,
+                      onPressed: () async {
+                        FirebaseUser user = await auth.appleSignIn();
+                        if (user != null) {
+                          Navigator.pushReplacementNamed(
+                              context, '/cafeterias');
+                        }
+                      },
+                    );
+                  }
+                },
+              ),
+              LoginButton(
+                  text: 'Continue as Guest', loginMethod: auth.anonLogin),
+            ]),
+      ),
     );
   }
 }
@@ -54,7 +90,7 @@ class LoginButton extends StatelessWidget {
         onPressed: () async {
           var user = await loginMethod();
           if (user != null) {
-            Navigator.pushReplacementNamed(context, '/topics');
+            Navigator.pushReplacementNamed(context, '/cafeterias');
           }
         },
         icon: Icon(this.icon),

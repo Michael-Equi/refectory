@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
 
@@ -18,6 +21,59 @@ class AuthService {
 
     updateUserData(user);
     return user;
+  }
+
+  // Sign in with Apple
+  Future<bool> get appleSignInAvailable => AppleSignIn.isAvailable();
+  Future<FirebaseUser> appleSignIn() async {
+    try {
+      final AuthorizationResult appleResult =
+          await AppleSignIn.performRequests([
+        AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+      ]);
+
+      if (appleResult.error != null) {
+        // handle errors
+      }
+
+      final AuthCredential credential =
+          OAuthProvider(providerId: 'apple.com').getCredential(
+        accessToken:
+            String.fromCharCodes(appleResult.credential.authorizationCode),
+        idToken: String.fromCharCodes(appleResult.credential.identityToken),
+      );
+
+      AuthResult firebaseResult = await _auth.signInWithCredential(credential);
+      FirebaseUser user = firebaseResult.user;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  /// Sign in with Google
+  Future<FirebaseUser> googleSignIn() async {
+    try {
+      GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+      GoogleSignInAuthentication googleAuth =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      AuthResult result = await _auth.signInWithCredential(credential);
+      FirebaseUser user = result.user;
+
+      // Update user data
+      updateUserData(user);
+
+      return user;
+    } catch (error) {
+      print(error);
+      return null;
+    }
   }
 
   /// Updates the User's data in Firestore on each new login
