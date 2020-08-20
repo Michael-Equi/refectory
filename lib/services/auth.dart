@@ -14,15 +14,6 @@ class AuthService {
   // Firebase user a realtime stream
   Stream<FirebaseUser> get user => _auth.onAuthStateChanged;
 
-  /// Anonymous Firebase login
-  Future<FirebaseUser> anonLogin() async {
-    AuthResult result = await _auth.signInAnonymously();
-    FirebaseUser user = result.user;
-
-    updateUserData(user);
-    return user;
-  }
-
   // Sign in with Apple
   Future<bool> get appleSignInAvailable => AppleSignIn.isAvailable();
   Future<FirebaseUser> appleSignIn() async {
@@ -45,6 +36,7 @@ class AuthService {
 
       AuthResult firebaseResult = await _auth.signInWithCredential(credential);
       FirebaseUser user = firebaseResult.user;
+      updateUserData(user);
     } catch (error) {
       print(error);
       return null;
@@ -76,9 +68,17 @@ class AuthService {
     }
   }
 
+  // Register with email and password
+  void register(String email, String password) async =>
+      (await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      ))
+          .user;
+
   /// Updates the User's data in Firestore on each new login
   Future<void> updateUserData(FirebaseUser user) {
-    DocumentReference reportRef = _db.collection('reports').document(user.uid);
+    DocumentReference reportRef = _db.collection('users').document(user.uid);
 
     return reportRef.setData({'uid': user.uid, 'lastActivity': DateTime.now()},
         merge: true);

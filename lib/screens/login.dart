@@ -4,6 +4,7 @@ import 'package:refectory/services/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:refectory/shared/appbar.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -74,8 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   },
                 ),
-                LoginButton(
-                    text: 'Continue as Guest', loginMethod: auth.anonLogin),
+                // FlatButton(
+                //   child: Text('Register new account'),
+                //   onPressed: () => Navigator.pushNamed(context, '/register'),
+                // ),
               ]),
         ),
       ),

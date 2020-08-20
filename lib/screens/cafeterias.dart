@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,6 +12,12 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of<FirebaseUser>(context);
+    if (user == null)
+      return Scaffold(
+        appBar: RefectoryAppBar(
+          pageName: "Cafeteria",
+        ),
+      );
     return Scaffold(
       appBar: RefectoryAppBar(
         pageName: "cafeterias",
@@ -18,22 +25,14 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: Container(
           padding: EdgeInsets.only(top: 10),
-          child: ListView.separated(
-            itemCount: 2,
-            itemBuilder: (context, index) {
-              return Column(
-                children: <Widget>[
-                  cafeteria(
-                    description: "Bowles",
-                    image: NetworkImage(
-                        "https://media-exp1.licdn.com/dms/image/C560BAQEShiy5M3rf5g/company-logo_200_200/0?e=2159024400&v=beta&t=e8nH_Weve1cbLmK7cN4KBBpkFxjKOcp3eF3OdXICNQw"),
-                  ),
-                ],
-              );
-            },
-            separatorBuilder: (context, index) {
-              return Divider();
-            },
+          child: StreamBuilder(
+            stream: Firestore.instance
+                .collection('users')
+                .document(user.uid)
+                .snapshots(),
+            builder: (context, snapshot) => CafeteriaList(
+              snapshot: snapshot,
+            ),
           ),
         ),
       ),
@@ -46,8 +45,37 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class cafeteria extends StatelessWidget {
-  const cafeteria({Key key, this.image, this.description}) : super(key: key);
+class CafeteriaList extends StatelessWidget {
+  const CafeteriaList({Key key, this.snapshot}) : super(key: key);
+
+  final AsyncSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!snapshot.hasData) return const Text("Loading");
+    print(snapshot.data['cafeterias'].length);
+    return ListView.separated(
+      itemCount: snapshot.data['cafeterias'].length,
+      itemBuilder: (context, index) {
+        return Column(
+          children: <Widget>[
+            Cafeteria(
+              description: snapshot.data['cafeterias'][index],
+              image: NetworkImage(
+                  "https://media-exp1.licdn.com/dms/image/C560BAQEShiy5M3rf5g/company-logo_200_200/0?e=2159024400&v=beta&t=e8nH_Weve1cbLmK7cN4KBBpkFxjKOcp3eF3OdXICNQw"),
+            ),
+          ],
+        );
+      },
+      separatorBuilder: (context, index) {
+        return Divider();
+      },
+    );
+  }
+}
+
+class Cafeteria extends StatelessWidget {
+  const Cafeteria({Key key, this.image, this.description}) : super(key: key);
   final NetworkImage image;
   final String description;
 

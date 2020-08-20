@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
           '/': (context) => LoginScreen(),
           '/cafeterias': (context) => MyHomePage(),
           '/profile': (context) => Profile(),
-          '/meals': (context) => Meals()
+          '/meals': (context) => Meals(),
+          '/register': (context) => RegisterEmail(),
         },
         theme: ThemeData(
           primarySwatch: Colors.grey,
