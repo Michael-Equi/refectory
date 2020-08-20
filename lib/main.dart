@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => LoginScreen(),
           '/cafeterias': (context) => MyHomePage(),
-          '/profile': (context) => Profile()
+          '/profile': (context) => Profile(),
+          '/meals': (context) => Meals()
         },
         theme: ThemeData(
           primarySwatch: Colors.grey,
