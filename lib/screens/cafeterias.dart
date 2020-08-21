@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:refectory/services/services.dart';
 import 'package:refectory/shared/shared.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -26,10 +27,7 @@ class MyHomePage extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.only(top: 10),
           child: StreamBuilder(
-            stream: Firestore.instance
-                .collection('users')
-                .document(user.uid)
-                .snapshots(),
+            stream: Document<User>(path: "users/${user.uid}").streamData(),
             builder: (context, snapshot) => CafeteriaList(
               snapshot: snapshot,
             ),
@@ -53,17 +51,22 @@ class CafeteriaList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!snapshot.hasData) return const Text("Loading");
-    print(snapshot.data['cafeterias'].length);
     return ListView.separated(
-      itemCount: snapshot.data['cafeterias'].length,
+      itemCount: 1,
       itemBuilder: (context, index) {
         return Column(
           children: <Widget>[
-            Cafeteria(
-              description: snapshot.data['cafeterias'][index],
-              image: NetworkImage(
-                  "https://media-exp1.licdn.com/dms/image/C560BAQEShiy5M3rf5g/company-logo_200_200/0?e=2159024400&v=beta&t=e8nH_Weve1cbLmK7cN4KBBpkFxjKOcp3eF3OdXICNQw"),
-            ),
+            StreamBuilder(
+                stream: Document<Cafeteria>(
+                        path: 'cafeterias/${snapshot.data.cafeterias[index]}')
+                    .streamData(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return Text("Loading");
+                  return CafeteriaTab(
+                    description: snapshot.data.name,
+                    image: NetworkImage(snapshot.data.iconUrl),
+                  );
+                }),
           ],
         );
       },
@@ -74,8 +77,8 @@ class CafeteriaList extends StatelessWidget {
   }
 }
 
-class Cafeteria extends StatelessWidget {
-  const Cafeteria({Key key, this.image, this.description}) : super(key: key);
+class CafeteriaTab extends StatelessWidget {
+  const CafeteriaTab({Key key, this.image, this.description}) : super(key: key);
   final NetworkImage image;
   final String description;
 
