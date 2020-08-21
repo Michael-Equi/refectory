@@ -19,13 +19,15 @@ class User {
 class Cafeteria {
   final String iconUrl;
   final String name;
+  final String uid;
 
-  Cafeteria({this.iconUrl, this.name});
+  Cafeteria({this.iconUrl, this.name, this.uid});
 
   factory Cafeteria.fromMap(Map data) {
     return Cafeteria(
       iconUrl: data['iconUrl'] ?? '',
       name: data['name'] ?? '',
+      uid: data['uid'] ?? '',
     );
   }
 }

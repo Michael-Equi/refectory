@@ -1,14 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:refectory/screens/screens.dart';
 import 'package:refectory/services/services.dart';
 import 'package:refectory/shared/shared.dart';
+import 'package:uuid/uuid.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key}) : super(key: key);
-  final String title = "Hello";
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class MyHomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => null,
-        tooltip: 'Increment',
+        tooltip: 'Add cafeteria',
         child: Icon(Icons.add),
       ),
     );
@@ -50,9 +51,9 @@ class CafeteriaList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!snapshot.hasData) return const Text("Loading");
+    if (!snapshot.hasData) return const CircularProgressIndicator();
     return ListView.separated(
-      itemCount: 1,
+      itemCount: snapshot.data.cafeterias.length,
       itemBuilder: (context, index) {
         return Column(
           children: <Widget>[
@@ -61,10 +62,11 @@ class CafeteriaList extends StatelessWidget {
                         path: 'cafeterias/${snapshot.data.cafeterias[index]}')
                     .streamData(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Text("Loading");
+                  if (!snapshot.hasData) return CircularProgressIndicator();
                   return CafeteriaTab(
-                    description: snapshot.data.name,
                     image: NetworkImage(snapshot.data.iconUrl),
+                    uid: snapshot.data.uid,
+                    description: snapshot.data.name,
                   );
                 }),
           ],
@@ -78,8 +80,10 @@ class CafeteriaList extends StatelessWidget {
 }
 
 class CafeteriaTab extends StatelessWidget {
-  const CafeteriaTab({Key key, this.image, this.description}) : super(key: key);
+  const CafeteriaTab({Key key, this.image, this.uid, this.description})
+      : super(key: key);
   final NetworkImage image;
+  final String uid;
   final String description;
 
   @override
@@ -110,7 +114,8 @@ class CafeteriaTab extends StatelessWidget {
             padding: EdgeInsets.only(left: 30),
           ),
         ]),
-        onPressed: () => Navigator.pushNamed(context, '/meals'),
+        onPressed: () => Navigator.pushNamed(context, '/meals',
+            arguments: MealsArguments(this.uid, "Message")),
       ),
     );
   }
