@@ -36,6 +36,10 @@ dependencies:
 
   table_calendar: ^2.2.3
 
+  sliding_up_panel: ^1.0.2
+  smooth_star_rating: 1.1.1
+  dash_chat: 1.1.14
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
