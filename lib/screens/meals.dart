@@ -26,7 +26,7 @@ class Meals extends StatelessWidget {
       ),
       body: SlidingUpPanel(
         panel: MealsPanel(),
-        collapsed: MealsCollapsed(),
+        minHeight: 50,
         body: MealsCalendar(),
       ),
     );
@@ -156,6 +156,10 @@ class _MealsPanelState extends State<MealsPanel> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Icon(
+                          FontAwesomeIcons.leaf,
+                          color: Colors.green,
+                        ),
                         Container(
                           padding:
                               EdgeInsets.only(top: 10, bottom: 10, left: 20),
@@ -220,27 +224,6 @@ class _MealsPanelState extends State<MealsPanel> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class MealsCollapsed extends StatelessWidget {
-  const MealsCollapsed({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey,
-      padding: EdgeInsets.all(20),
-      child: Center(
-        child: Column(
-          children: [
-            Text("Brunch: 10:00AM - 1:00PM"),
-            Text("Dinner: 6:00PM - 7:00PM"),
-            Text("Special Notes: Breakfast will be boxed."),
-          ],
-        ),
-      ),
     );
   }
 }
