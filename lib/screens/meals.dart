@@ -26,8 +26,8 @@ class Meals extends StatelessWidget {
       ),
       body: SlidingUpPanel(
         panel: MealsPanel(),
-        minHeight: 50,
         body: MealsCalendar(),
+        minHeight: 50,
       ),
     );
   }

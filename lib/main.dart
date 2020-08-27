@@ -32,6 +32,9 @@ class MyApp extends StatelessWidget {
         },
         theme: ThemeData(
           primarySwatch: Colors.grey,
+          bottomAppBarColor: Color.fromRGBO(50, 50, 50, 1),
+          accentColor: Color.fromRGBO(50, 50, 50, 1),
+          backgroundColor: Color.fromRGBO(230, 230, 230, 1),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
       ),
