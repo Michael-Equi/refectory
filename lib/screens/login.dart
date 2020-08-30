@@ -37,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Center(
                 child: Container(
+                  padding: EdgeInsets.only(top: 50),
                   width: 300,
                   height: 200,
                   child: Image.asset(
