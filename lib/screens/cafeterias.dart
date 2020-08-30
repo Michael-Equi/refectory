@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:refectory/screens/screens.dart';
 import 'package:refectory/services/services.dart';
 import 'package:refectory/shared/shared.dart';
-import 'package:uuid/uuid.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -37,73 +35,10 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        // onPressed: () => showDialog(
-        //   context: context,
-        //   builder: (BuildContext context) => NewCafeteriaDialog(),
-        // ),
         onPressed: () => Navigator.push(
             context, MaterialPageRoute(builder: (context) => QRViewExample())),
         tooltip: 'Add cafeteria',
         child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class NewCafeteriaDialog extends StatefulWidget {
-  NewCafeteriaDialog({Key key}) : super(key: key);
-
-  @override
-  _NewCafeteriaDialogState createState() => _NewCafeteriaDialogState();
-}
-
-class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
-  final _formKey = GlobalKey<FormState>();
-
-  bool _joinCafeteria(String name) {
-    return true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        title: const Text('Join a new cafeteria'),
-        content: new Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Enter the id of the cafeteria'),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                } else if (value.contains(' ')) {
-                  return 'No spaces please ;)';
-                } else if (!value.contains(RegExp(r'^[a-zA-Z0-9]+$'))) {
-                  return 'Only letters and numbers';
-                }
-                return null;
-              },
-            ),
-            RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
-                }
-              },
-              child: Text('Submit'),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -183,58 +118,5 @@ class CafeteriaTab extends StatelessWidget {
             arguments: MealsArguments(this.uid, "Message")),
       ),
     );
-  }
-}
-
-class QRViewExample extends StatefulWidget {
-  QRViewExample({Key key}) : super(key: key);
-
-  @override
-  _QRViewExampleState createState() => _QRViewExampleState();
-}
-
-class _QRViewExampleState extends State<QRViewExample> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
-  var qrText = "";
-  QRViewController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: RefectoryAppBar(pageName: "qr scanner"),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: Text('Scan result: $qrText'),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        qrText = scanData;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
   }
 }

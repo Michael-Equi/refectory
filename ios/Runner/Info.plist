@@ -64,5 +64,7 @@
     <true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Needed to read QR code</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needed to read attach icons and images to posts</string>
 </dict>
 </plist>
