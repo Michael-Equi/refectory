@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:refectory/services/services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class NewCafeteriaDialog extends StatefulWidget {
   NewCafeteriaDialog({Key key}) : super(key: key);
@@ -61,6 +64,7 @@ class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
     return Form(
       key: _formKey,
       child: AlertDialog(
@@ -117,7 +121,12 @@ class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
                       _image == null
                           ? AssetImage('assets/images/plate_and_utencils.png')
                           : FileImage(_image));
-                  print(uuid);
+                  Firestore.instance
+                      .collection('users')
+                      .document(user.uid)
+                      .updateData({
+                    'cafeterias': FieldValue.arrayUnion([uuid])
+                  });
                   Navigator.pop(context);
                   Navigator.pop(context);
                 }

@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:refectory/screens/screens.dart';
 import 'package:refectory/services/services.dart';
 import 'package:refectory/shared/shared.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -113,6 +113,31 @@ class CafeteriaTab extends StatelessWidget {
                 Text(description, style: Theme.of(context).textTheme.headline2),
             padding: EdgeInsets.only(left: 30),
           ),
+          Spacer(),
+          Container(
+            height: 50,
+            width: 50,
+            child: FlatButton(
+              child: Icon(
+                FontAwesomeIcons.qrcode,
+                size: 20,
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  content: Container(
+                    height: 250,
+                    width: 400,
+                    child: QrImage(
+                      data: uid,
+                      version: QrVersions.auto,
+                      size: 400.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
         ]),
         onPressed: () => Navigator.pushNamed(context, '/meals',
             arguments: MealsArguments(this.uid, "Message")),
