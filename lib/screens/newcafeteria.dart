@@ -31,7 +31,7 @@ class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
     });
   }
 
-  String _createCafeteria(String name, ImageProvider image) {
+  String _createCafeteria(String name, ImageProvider image, String ownerId) {
     var uuid = Uuid();
     String uid = uuid.v1().toString();
     var doc = Document<Cafeteria>(path: '/cafeterias/${uid}');
@@ -40,12 +40,12 @@ class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
       Future<String> url = _uploadFile(uid);
       url.then(
         (url) => doc.upsert(
-          {'iconUrl': url, 'uid': uid, 'name': name},
+          {'iconUrl': url, 'uid': uid, 'name': name, 'ownerId': ownerId},
         ),
       );
     } else {
       doc.upsert(
-        {'iconUrl': _defaultUrl, 'uid': uid, 'name': name},
+        {'iconUrl': _defaultUrl, 'uid': uid, 'name': name, 'ownerId': ownerId},
       );
       print('New cafeteria created');
     }
@@ -120,7 +120,8 @@ class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
                       name = name,
                       _image == null
                           ? AssetImage('assets/images/plate_and_utencils.png')
-                          : FileImage(_image));
+                          : FileImage(_image),
+                      user.uid);
                   Firestore.instance
                       .collection('users')
                       .document(user.uid)

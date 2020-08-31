@@ -20,14 +20,16 @@ class Cafeteria {
   final String iconUrl;
   final String name;
   final String uid;
+  final String ownerId;
 
-  Cafeteria({this.iconUrl, this.name, this.uid});
+  Cafeteria({this.iconUrl, this.name, this.uid, this.ownerId});
 
   factory Cafeteria.fromMap(Map data) {
     return Cafeteria(
       iconUrl: data['iconUrl'] ?? '',
       name: data['name'] ?? '',
       uid: data['uid'] ?? '',
+      ownerId: data['ownerId'] ?? '',
     );
   }
 }

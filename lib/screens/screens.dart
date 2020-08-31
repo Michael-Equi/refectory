@@ -5,3 +5,5 @@ export 'profile.dart';
 export 'register.dart';
 export 'newcafeteria.dart';
 export 'qr.dart';
+export 'mealscalendar.dart';
+export 'mealspanel.dart';
