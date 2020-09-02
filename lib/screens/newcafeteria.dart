@@ -84,6 +84,8 @@ class _NewCafeteriaDialogState extends State<NewCafeteriaDialog> {
                   return 'Please enter some text';
                 } else if (!value.contains(RegExp(r'^[a-zA-Z0-9 ]+$'))) {
                   return 'Only letters and numbers';
+                } else if (value.length > 6) {
+                  return 'Under 6 characters';
                 }
                 name = value;
                 return null;

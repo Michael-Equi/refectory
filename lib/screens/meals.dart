@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:refectory/shared/shared.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'screens.dart';
+import 'package:provider/provider.dart';
 
 class MealsArguments {
   final String cafeteriaUid;
@@ -21,10 +22,13 @@ class Meals extends StatelessWidget {
       appBar: RefectoryAppBar(
         pageName: "meals",
       ),
-      body: SlidingUpPanel(
-        panel: MealsPanel(cafeteriaId: args.cafeteriaUid),
-        body: MealsCalendar(cafeteriaId: args.cafeteriaUid),
-        minHeight: 100,
+      body: ChangeNotifierProvider<ValueNotifier<DateTime>>(
+        create: (context) => ValueNotifier<DateTime>(DateTime.now()),
+        child: SlidingUpPanel(
+          panel: MealsPanel(cafeteriaId: args.cafeteriaUid),
+          body: MealsCalendar(cafeteriaId: args.cafeteriaUid),
+          minHeight: 100,
+        ),
       ),
     );
   }

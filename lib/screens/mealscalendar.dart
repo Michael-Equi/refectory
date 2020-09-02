@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:provider/provider.dart';
 
 class MealsCalendar extends StatefulWidget {
   MealsCalendar({Key key, this.cafeteriaId}) : super(key: key);
@@ -42,8 +43,12 @@ class _MealsCalendarState extends State<MealsCalendar> {
   }
 
   void _onDaySelected(DateTime day, List events) {
+    final selelctedDate =
+        Provider.of<ValueNotifier<DateTime>>(context, listen: false);
+
     print('CALLBACK: _onDaySelected');
     setState(() {
+      selelctedDate.value = day;
       _selectedEvents = events;
     });
   }
@@ -65,18 +70,11 @@ class _MealsCalendarState extends State<MealsCalendar> {
       events: _events,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
+        selectedColor: Colors.grey[500],
+        todayColor: Colors.grey[200],
+        markersColor: Colors.grey[500],
         outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
+        weekendStyle: TextStyle(color: Colors.grey),
       ),
       onDaySelected: _onDaySelected,
       onVisibleDaysChanged: _onVisibleDaysChanged,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:refectory/services/services.dart';
@@ -26,41 +27,53 @@ class _MealsPanelState extends State<MealsPanel> {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of<FirebaseUser>(context);
+    final selectedDate = Provider.of<ValueNotifier<DateTime>>(context);
+
     var center = Center(
       child: StreamBuilder(
           stream: Document<Cafeteria>(path: 'cafeterias/${widget.cafeteriaId}')
               .streamData(),
           builder: (context, snapshot) {
+            print(snapshot.data.uid);
             if (!snapshot.hasData) return const CircularProgressIndicator();
             bool isOwner = user.uid == snapshot.data.ownerId;
-            return PageView.builder(
-              itemCount: 10 + (isOwner ? 1 : 0),
-              controller: PageController(viewportFraction: 0.7),
-              onPageChanged: (int index) => setState(() => _index = index),
-              itemBuilder: (_, i) {
-                if (i == 0 && isOwner) {
-                  return InkWell(
-                    onTap: () => showDialog(
-                        context: context,
-                        child: CreatMealForm(formKey: _formKey)),
-                    child: Card(
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Icon(
-                        Icons.add_circle,
-                        size: 100,
-                        color: Colors.grey,
+            return StreamBuilder(
+              stream: Firestore.instance
+                  .collection('cafeterias')
+                  .document(snapshot.data.uid)
+                  .collection('mealrefs')
+                  .getDocuments()
+                  .asStream(),
+              builder: (context, snapshot) => PageView.builder(
+                itemCount: 10 + (isOwner ? 1 : 0),
+                controller: PageController(viewportFraction: 0.7),
+                onPageChanged: (int index) => setState(() => _index = index),
+                itemBuilder: (_, i) {
+                  print(snapshot.data.size);
+                  if (i == 0 && isOwner) {
+                    return InkWell(
+                      onTap: () => showDialog(
+                          context: context,
+                          child: CreatMealForm(formKey: _formKey)),
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Icon(
+                          Icons.add_circle,
+                          size: 100,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
+                    );
+                  }
+                  return Transform.scale(
+                    scale: i == _index ? 1 : 0.9,
+                    child: MealCard(),
                   );
-                }
-                return Transform.scale(
-                  scale: i == _index ? 1 : 0.9,
-                  child: MealCard(),
-                );
-              },
+                },
+              ),
             );
           }),
     );
