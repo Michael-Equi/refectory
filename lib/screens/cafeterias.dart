@@ -65,9 +65,7 @@ class CafeteriaList extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
                   return CafeteriaTab(
-                    image: NetworkImage(snapshot.data.iconUrl),
-                    uid: snapshot.data.uid,
-                    description: snapshot.data.name,
+                    cafeteria: snapshot.data,
                   );
                 }),
           ],
@@ -81,11 +79,8 @@ class CafeteriaList extends StatelessWidget {
 }
 
 class CafeteriaTab extends StatelessWidget {
-  const CafeteriaTab({Key key, this.image, this.uid, this.description})
-      : super(key: key);
-  final NetworkImage image;
-  final String uid;
-  final String description;
+  const CafeteriaTab({Key key, this.cafeteria}) : super(key: key);
+  final Cafeteria cafeteria;
 
   @override
   Widget build(BuildContext context) {
@@ -106,12 +101,14 @@ class CafeteriaTab extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(8),
               ),
-              image: DecorationImage(image: image, fit: BoxFit.fill),
+              image: DecorationImage(
+                  image: NetworkImage(this.cafeteria.iconUrl),
+                  fit: BoxFit.fill),
             ),
           ),
           Container(
-            child:
-                Text(description, style: Theme.of(context).textTheme.headline2),
+            child: Text(this.cafeteria.name,
+                style: Theme.of(context).textTheme.headline2),
             padding: EdgeInsets.only(left: 30),
           ),
           Spacer(),
@@ -130,7 +127,7 @@ class CafeteriaTab extends StatelessWidget {
                     height: 250,
                     width: 400,
                     child: QrImage(
-                      data: uid,
+                      data: this.cafeteria.uid,
                       version: QrVersions.auto,
                       size: 400.0,
                     ),
@@ -141,7 +138,9 @@ class CafeteriaTab extends StatelessWidget {
           )
         ]),
         onPressed: () => Navigator.pushNamed(context, '/meals',
-            arguments: MealsArguments(this.uid, "Message")),
+            arguments: MealsArguments(
+              this.cafeteria,
+            )),
       ),
     );
   }

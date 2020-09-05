@@ -1,14 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:refectory/services/models.dart';
 import 'package:refectory/shared/shared.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'screens.dart';
 import 'package:provider/provider.dart';
 
 class MealsArguments {
-  final String cafeteriaUid;
-  final String message;
-
-  MealsArguments(this.cafeteriaUid, this.message);
+  final Cafeteria cafeteria;
+  MealsArguments(this.cafeteria);
 }
 
 class Meals extends StatelessWidget {
@@ -17,10 +18,23 @@ class Meals extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MealsArguments args = ModalRoute.of(context).settings.arguments;
-    print(args.cafeteriaUid);
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
     return Scaffold(
-      appBar: RefectoryAppBar(
-        pageName: "meals",
+      appBar: AppBar(
+        title: Text("meals"),
+        actions: <Widget>[
+          args.cafeteria.ownerId == user.uid
+              ? IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () => Navigator.pushNamed(context, '/management',
+                      arguments: args.cafeteria),
+                )
+              : Container(),
+          IconButton(
+            icon: Icon(FontAwesomeIcons.userCircle),
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
+          )
+        ],
       ),
       body: GestureDetector(
         onTap: () {
@@ -33,8 +47,8 @@ class Meals extends StatelessWidget {
             ),
           ],
           child: SlidingUpPanel(
-            panel: MealsPanel(cafeteriaId: args.cafeteriaUid),
-            body: MealsCalendar(cafeteriaId: args.cafeteriaUid),
+            panel: MealsPanel(cafeteriaId: args.cafeteria.uid),
+            body: MealsCalendar(cafeteriaId: args.cafeteria.uid),
             minHeight: 100,
           ),
         ),

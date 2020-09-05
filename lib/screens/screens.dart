@@ -8,3 +8,4 @@ export 'qr.dart';
 export 'mealscalendar.dart';
 export 'mealspanel.dart';
 export 'createmeal.dart';
+export 'cafeteriamanagement.dart';

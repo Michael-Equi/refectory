@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
           '/profile': (context) => Profile(),
           '/meals': (context) => Meals(),
           '/register': (context) => RegisterEmail(),
+          '/management': (context) => CafeteriaManagementPage(),
         },
         theme: ThemeData(
           primarySwatch: Colors.grey,
