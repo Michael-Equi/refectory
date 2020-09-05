@@ -6,5 +6,6 @@ class Global {
   static final Map models = {
     User: (data) => User.fromMap(data),
     Cafeteria: (data) => Cafeteria.fromMap(data),
+    MealDoc: (data) => MealDoc.fromMap(data)
   };
 }

@@ -33,3 +33,23 @@ class Cafeteria {
     );
   }
 }
+
+class MealDoc {
+  final String iconUrl;
+  final String name;
+  final String uid;
+  final bool isVegan;
+  final String meal; //breakfast, brunch, lunch, dinner
+
+  MealDoc({this.iconUrl, this.name, this.uid, this.isVegan, this.meal});
+
+  factory MealDoc.fromMap(Map data) {
+    return MealDoc(
+      iconUrl: data['iconUrl'] ?? '',
+      name: data['name'] ?? '',
+      uid: data['uid'] ?? '',
+      isVegan: data['isVegan'] ?? '',
+      meal: data['meal'] ?? '',
+    );
+  }
+}

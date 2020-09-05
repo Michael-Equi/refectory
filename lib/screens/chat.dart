@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
-import 'package:refectory/services/services.dart';
-
-import 'package:refectory/services/services.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class MealChat extends StatefulWidget {
-  MealChat({Key key}) : super(key: key);
+  MealChat({Key key, this.cafeteriaId, this.mealId}) : super(key: key);
+  final String mealId;
+  final String cafeteriaId;
 
   @override
   _MealChatState createState() => _MealChatState();
@@ -48,12 +45,11 @@ class _MealChatState extends State<MealChat> {
         i++;
       }
       Timer(Duration(milliseconds: 300), () {
-        _chatViewKey.currentState.scrollController
-          ..animateTo(
-            _chatViewKey.currentState.scrollController.position.maxScrollExtent,
-            curve: Curves.easeOut,
-            duration: const Duration(milliseconds: 300),
-          );
+        _chatViewKey.currentState.scrollController.animateTo(
+          _chatViewKey.currentState.scrollController.position.maxScrollExtent,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        );
       });
     });
   }
@@ -61,7 +57,8 @@ class _MealChatState extends State<MealChat> {
   void onSend(ChatMessage message) async {
     print(message.toJson());
     var documentReference = Firestore.instance
-        .collection('/cafeterias/194172c0-e3ca-11ea-8674-25c24d2d1b28/messages')
+        .collection(
+            '/cafeterias/${widget.cafeteriaId}/meals/${widget.mealId}/messages')
         .document(DateTime.now().millisecondsSinceEpoch.toString());
 
     await Firestore.instance.runTransaction((transaction) async {
@@ -80,86 +77,77 @@ class _MealChatState extends State<MealChat> {
         child: StreamBuilder(
             stream: Firestore.instance
                 .collection(
-                    '/cafeterias/194172c0-e3ca-11ea-8674-25c24d2d1b28/messages')
+                    '/cafeterias/${widget.cafeteriaId}/meals/${widget.mealId}/messages')
                 .snapshots(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor,
-                    ),
+              List<DocumentSnapshot> items = snapshot.data?.documents;
+              List<ChatMessage> messages = snapshot.hasData
+                  ? items.map((i) => ChatMessage.fromJson(i.data)).toList()
+                  : [];
+              return DashChat(
+                  key: _chatViewKey,
+                  inverted: false,
+                  onSend: onSend,
+                  sendOnEnter: true,
+                  textInputAction: TextInputAction.send,
+                  user: user,
+                  inputDecoration: InputDecoration.collapsed(
+                      hintText: "Add messsage here..."),
+                  dateFormat: DateFormat('yyyy-MMM-dd'),
+                  timeFormat: DateFormat('HH:mm'),
+                  messages: messages,
+                  showUserAvatar: false,
+                  showAvatarForEveryMessage: false,
+                  scrollToBottom: false,
+                  onPressAvatar: (ChatUser user) {
+                    print("OnPressAvatar: ${user.name}");
+                  },
+                  onLongPressAvatar: (ChatUser user) {
+                    print("OnLongPressAvatar: ${user.name}");
+                  },
+                  inputMaxLines: 5,
+                  messageContainerPadding:
+                      EdgeInsets.only(left: 5.0, right: 5.0),
+                  alwaysShowSend: false,
+                  inputTextStyle: TextStyle(fontSize: 16.0),
+                  inputContainerStyle: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
                   ),
-                );
-              } else {
-                List<DocumentSnapshot> items = snapshot.data.documents;
-                var messages =
-                    items.map((i) => ChatMessage.fromJson(i.data)).toList();
-                return DashChat(
-                    key: _chatViewKey,
-                    inverted: false,
-                    onSend: onSend,
-                    sendOnEnter: true,
-                    textInputAction: TextInputAction.send,
-                    user: user,
-                    inputDecoration: InputDecoration.collapsed(
-                        hintText: "Add messsage here..."),
-                    dateFormat: DateFormat('yyyy-MMM-dd'),
-                    timeFormat: DateFormat('HH:mm'),
-                    messages: messages,
-                    showUserAvatar: false,
-                    showAvatarForEveryMessage: false,
-                    scrollToBottom: false,
-                    onPressAvatar: (ChatUser user) {
-                      print("OnPressAvatar: ${user.name}");
-                    },
-                    onLongPressAvatar: (ChatUser user) {
-                      print("OnLongPressAvatar: ${user.name}");
-                    },
-                    inputMaxLines: 5,
-                    messageContainerPadding:
-                        EdgeInsets.only(left: 5.0, right: 5.0),
-                    alwaysShowSend: false,
-                    inputTextStyle: TextStyle(fontSize: 16.0),
-                    inputContainerStyle: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
-                    ),
-                    onQuickReply: (Reply reply) {
-                      setState(() {
-                        messages.add(ChatMessage(
-                            text: reply.value,
-                            createdAt: DateTime.now(),
-                            user: user));
+                  onQuickReply: (Reply reply) {
+                    setState(() {
+                      messages.add(ChatMessage(
+                          text: reply.value,
+                          createdAt: DateTime.now(),
+                          user: user));
 
-                        messages = [...messages];
-                      });
+                      messages = [...messages];
+                    });
 
-                      Timer(Duration(milliseconds: 300), () {
-                        _chatViewKey.currentState.scrollController
-                          ..animateTo(
-                            _chatViewKey.currentState.scrollController.position
-                                .maxScrollExtent,
-                            curve: Curves.easeOut,
-                            duration: const Duration(milliseconds: 300),
-                          );
+                    Timer(Duration(milliseconds: 300), () {
+                      _chatViewKey.currentState.scrollController
+                        ..animateTo(
+                          _chatViewKey.currentState.scrollController.position
+                              .maxScrollExtent,
+                          curve: Curves.easeOut,
+                          duration: const Duration(milliseconds: 300),
+                        );
 
-                        if (i == 0) {
+                      if (i == 0) {
+                        systemMessage();
+                        Timer(Duration(milliseconds: 600), () {
                           systemMessage();
-                          Timer(Duration(milliseconds: 600), () {
-                            systemMessage();
-                          });
-                        } else {
-                          systemMessage();
-                        }
-                      });
-                    },
-                    onLoadEarlier: () {
-                      print("laoding...");
-                    },
-                    shouldShowLoadEarlier: false,
-                    showTraillingBeforeSend: true);
-              }
+                        });
+                      } else {
+                        systemMessage();
+                      }
+                    });
+                  },
+                  onLoadEarlier: () {
+                    print("laoding...");
+                  },
+                  shouldShowLoadEarlier: false,
+                  showTraillingBeforeSend: true);
             }),
       ),
     );
