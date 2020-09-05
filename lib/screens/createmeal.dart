@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:refectory/services/services.dart';
-import 'package:provider/provider.dart';
 
 class CreateMealForm extends StatefulWidget {
   const CreateMealForm({
@@ -37,7 +36,7 @@ class _CreateMealFormState extends State<CreateMealForm> {
       'https://firebasestorage.googleapis.com/v0/b/refectory-76cf7.appspot.com/o/cafeterias%2Fplate_and_utencils.png?alt=media&token=d4c013df-f9da-4f0d-b87f-3e29471587e3';
 
   Future _getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
       _image = File(pickedFile.path);
@@ -107,8 +106,6 @@ class _CreateMealFormState extends State<CreateMealForm> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter some text';
-                  } else if (!value.contains(RegExp(r'^[a-zA-Z0-9 ]+$'))) {
-                    return 'Only letters and numbers';
                   }
                   _name = value;
                   return null;

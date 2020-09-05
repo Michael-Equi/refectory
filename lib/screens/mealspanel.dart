@@ -27,14 +27,17 @@ class _MealsPanelState extends State<MealsPanel> {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of<FirebaseUser>(context);
-    final selectedDate = Provider.of<ValueNotifier<DateTime>>(context);
+    final selectedDateRaw = Provider.of<ValueNotifier<DateTime>>(context);
 
-    if (lastDate != selectedDate.value && _index != 0) {
+    var selectedDate = DateTime(selectedDateRaw.value.year,
+        selectedDateRaw.value.month, selectedDateRaw.value.day);
+
+    if (lastDate != selectedDate && _index != 0) {
       _index = 0;
       pageController.animateTo(0,
           duration: Duration(milliseconds: 1), curve: Curves.linear);
     }
-    lastDate = selectedDate.value;
+    lastDate = selectedDate;
 
     var center = Center(
       child: StreamBuilder(
@@ -48,7 +51,7 @@ class _MealsPanelState extends State<MealsPanel> {
                     .collection('cafeterias')
                     .document(snapshot.data.uid)
                     .collection('mealrefs')
-                    .where('date', isEqualTo: selectedDate.value)
+                    .where('date', isEqualTo: selectedDate)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
@@ -70,7 +73,7 @@ class _MealsPanelState extends State<MealsPanel> {
                               formKey: _formKey,
                               cafeteriaUid: widget.cafeteriaId,
                               selectedMealTime: dropdownValue,
-                              selectedDate: selectedDate.value,
+                              selectedDate: selectedDate,
                             ),
                           ),
                           child: Transform.scale(
@@ -169,9 +172,13 @@ class MealCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  width: 300,
                   height: 150,
-                  child: Image.network(
-                    snapshot.data.iconUrl,
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Image.network(
+                      snapshot.data.iconUrl,
+                    ),
                   ),
                 ),
                 Container(

@@ -29,15 +29,15 @@ class _MealsCalendarState extends State<MealsCalendar> {
   @override
   Widget build(BuildContext context) {
     final _selectedDay = DateTime.now();
-    _events = {
-      _selectedDay.subtract(Duration(days: 30)): [
-        'Event A0',
-        'Event B0',
-        'Event C0'
-      ],
-    };
+    // _events = {
+    //   _selectedDay.subtract(Duration(days: 30)): [
+    //     'Event A0',
+    //     'Event B0',
+    //     'Event C0'
+    //   ],
+    // };
 
-    _selectedEvents = _events[_selectedDay] ?? [];
+    // _selectedEvents = _events[_selectedDay] ?? [];
 
     return _buildTableCalendar();
   }
@@ -79,6 +79,9 @@ class _MealsCalendarState extends State<MealsCalendar> {
       onDaySelected: _onDaySelected,
       onVisibleDaysChanged: _onVisibleDaysChanged,
       onCalendarCreated: _onCalendarCreated,
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekendStyle: TextStyle().copyWith(color: Colors.grey[500]),
+      ),
     );
   }
 }
