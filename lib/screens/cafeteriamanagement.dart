@@ -30,7 +30,7 @@ class _CafeteriaManagementPageState extends State<CafeteriaManagementPage> {
         .getDocuments();
     if (mealrefs != null && mealrefs.documents.isNotEmpty) {
       var mealArr = mealrefs.documents[0].data[dropdownValue];
-      if (mealArr != null) {
+      if (mealArr != null && mealArr.isNotEmpty) {
         for (int i = 0; i < mealArr.length; i++) {
           var meals = await Firestore.instance
               .collection('cafeterias')
@@ -38,13 +38,14 @@ class _CafeteriaManagementPageState extends State<CafeteriaManagementPage> {
               .collection('meals')
               .document(mealArr[i])
               .get();
-          if (meals.data['savers'] != null) {
+          if (meals.data['savers'] != null && meals.data['savers'].isNotEmpty) {
             for (int n = 0; n < meals.data['savers'].length; n++) {
               var usersProf = await Firestore.instance
                   .collection('users')
-                  .document(meals.data['savers'][i])
+                  .document(meals.data['savers'][n])
                   .get();
               if (savedUserMealMappings.containsKey(usersProf.data['name'])) {
+                print("Hello");
                 savedUserMealMappings[usersProf.data['name']]
                     .add(meals.data['name']);
               } else {
@@ -52,7 +53,6 @@ class _CafeteriaManagementPageState extends State<CafeteriaManagementPage> {
                   usersProf.data['name']: [meals.data['name']]
                 });
               }
-              return savedUserMealMappings;
             }
           }
         }
