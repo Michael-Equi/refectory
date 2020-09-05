@@ -51,7 +51,8 @@ class CafeteriaList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!snapshot.hasData) return const CircularProgressIndicator();
+    if (!snapshot.hasData)
+      return Center(child: Text("Press the '+' button to add a cafeteria"));
     return ListView.separated(
       itemCount: snapshot.data.cafeterias.length,
       itemBuilder: (context, index) {
