@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
+import 'package:provider/provider.dart';
 
 class MealChat extends StatefulWidget {
   MealChat({Key key, this.cafeteriaId, this.mealId}) : super(key: key);
@@ -14,18 +16,6 @@ class MealChat extends StatefulWidget {
 
 class _MealChatState extends State<MealChat> {
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
-  final ChatUser user = ChatUser(
-    name: "Fayeed",
-    firstName: "Fayeed",
-    lastName: "Pawaskar",
-    uid: "12345678",
-    avatar: "https://www.wrappixel.com/ampleadmin/assets/images/users/4.jpg",
-  );
-
-  final ChatUser otherUser = ChatUser(
-    name: "Mrfatty",
-    uid: "25649654",
-  );
 
   List<ChatMessage> messages = List<ChatMessage>();
   var m = List<ChatMessage>();
@@ -71,6 +61,12 @@ class _MealChatState extends State<MealChat> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseUser firebaseUser = Provider.of<FirebaseUser>(context);
+    ChatUser user = ChatUser(
+      name: firebaseUser.displayName,
+      uid: firebaseUser.displayName,
+      avatar: firebaseUser.photoUrl,
+    );
     return Expanded(
       child: Container(
         padding: EdgeInsets.only(bottom: 2, left: 5, right: 5),
@@ -144,7 +140,7 @@ class _MealChatState extends State<MealChat> {
                     });
                   },
                   onLoadEarlier: () {
-                    print("laoding...");
+                    print("loading...");
                   },
                   shouldShowLoadEarlier: false,
                   showTraillingBeforeSend: true);

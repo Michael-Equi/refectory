@@ -51,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 400,
                 height: 300,
               ),
-              Spacer(),
               LoginButton(
                 text: 'Sign in with Google',
                 icon: FontAwesomeIcons.google,

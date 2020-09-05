@@ -22,16 +22,21 @@ class Meals extends StatelessWidget {
       appBar: RefectoryAppBar(
         pageName: "meals",
       ),
-      body: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ValueNotifier<DateTime>>(
-            create: (context) => ValueNotifier<DateTime>(DateTime.now()),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ValueNotifier<DateTime>>(
+              create: (context) => ValueNotifier<DateTime>(DateTime.now()),
+            ),
+          ],
+          child: SlidingUpPanel(
+            panel: MealsPanel(cafeteriaId: args.cafeteriaUid),
+            body: MealsCalendar(cafeteriaId: args.cafeteriaUid),
+            minHeight: 100,
           ),
-        ],
-        child: SlidingUpPanel(
-          panel: MealsPanel(cafeteriaId: args.cafeteriaUid),
-          body: MealsCalendar(cafeteriaId: args.cafeteriaUid),
-          minHeight: 100,
         ),
       ),
     );

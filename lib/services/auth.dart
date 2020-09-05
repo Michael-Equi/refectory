@@ -80,8 +80,12 @@ class AuthService {
   Future<void> updateUserData(FirebaseUser user) {
     DocumentReference reportRef = _db.collection('users').document(user.uid);
 
-    return reportRef.setData({'uid': user.uid, 'lastActivity': DateTime.now()},
-        merge: true);
+    return reportRef.setData({
+      'uid': user.uid,
+      'lastActivity': DateTime.now(),
+      'email': user.email,
+      'name': user.displayName
+    }, merge: true);
   }
 
   // Sign out

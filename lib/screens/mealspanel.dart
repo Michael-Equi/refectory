@@ -156,6 +156,7 @@ class MealCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
     return StreamBuilder(
       stream:
           Document<MealDoc>(path: 'cafeterias/${cafeteriaId}/meals/${mealId}')
@@ -198,10 +199,19 @@ class MealCard extends StatelessWidget {
                       child: SmoothStarRating(
                           allowHalfRating: false,
                           onRated: (v) {
-                            print("Hello");
+                            Firestore.instance
+                                .collection('cafeterias')
+                                .document(cafeteriaId)
+                                .collection('meals')
+                                .document(mealId)
+                                .updateData({
+                              'ratings': {user.uid: v}
+                            });
                           },
                           starCount: 5,
-                          rating: 2,
+                          rating: snapshot.data.ratings == null
+                              ? 0
+                              : snapshot.data.ratings[user.uid] ?? 0,
                           size: 25.0,
                           isReadOnly: false,
                           color: Colors.green,
@@ -211,9 +221,35 @@ class MealCard extends StatelessWidget {
                     Container(
                       width: 60,
                       child: FlatButton(
-                        child: Icon(FontAwesomeIcons.archive),
-                        onPressed: () => print("Hello"),
-                      ),
+                          child: Icon(
+                            FontAwesomeIcons.archive,
+                            color:
+                                (snapshot.data.savers ?? []).contains(user.uid)
+                                    ? Colors.grey[90]
+                                    : Colors.grey,
+                          ),
+                          onPressed: () {
+                            if ((snapshot.data.savers ?? [])
+                                .contains(user.uid)) {
+                              Firestore.instance
+                                  .collection('cafeterias')
+                                  .document(cafeteriaId)
+                                  .collection('meals')
+                                  .document(mealId)
+                                  .updateData({
+                                'savers': FieldValue.arrayRemove([user.uid])
+                              });
+                            } else {
+                              Firestore.instance
+                                  .collection('cafeterias')
+                                  .document(cafeteriaId)
+                                  .collection('meals')
+                                  .document(mealId)
+                                  .updateData({
+                                'savers': FieldValue.arrayUnion([user.uid])
+                              });
+                            }
+                          }),
                     ),
                   ],
                 ),
