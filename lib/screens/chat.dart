@@ -63,9 +63,9 @@ class _MealChatState extends State<MealChat> {
   Widget build(BuildContext context) {
     FirebaseUser firebaseUser = Provider.of<FirebaseUser>(context);
     ChatUser user = ChatUser(
-      name: firebaseUser.displayName,
-      uid: firebaseUser.displayName,
-      avatar: firebaseUser.photoUrl,
+      name: firebaseUser?.displayName,
+      uid: firebaseUser?.displayName,
+      avatar: firebaseUser?.photoUrl,
     );
     return Expanded(
       child: Container(
@@ -96,10 +96,10 @@ class _MealChatState extends State<MealChat> {
                   showAvatarForEveryMessage: false,
                   scrollToBottom: false,
                   onPressAvatar: (ChatUser user) {
-                    print("OnPressAvatar: ${user.name}");
+                    print("OnPressAvatar: ${user?.name}");
                   },
                   onLongPressAvatar: (ChatUser user) {
-                    print("OnLongPressAvatar: ${user.name}");
+                    print("OnLongPressAvatar: ${user?.name}");
                   },
                   inputMaxLines: 5,
                   messageContainerPadding:
@@ -140,7 +140,7 @@ class _MealChatState extends State<MealChat> {
                     });
                   },
                   onLoadEarlier: () {
-                    print("loading...");
+                    // print("loading...");
                   },
                   shouldShowLoadEarlier: false,
                   showTraillingBeforeSend: true);

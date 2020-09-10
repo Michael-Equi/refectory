@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:refectory/services/models.dart';
-import 'package:refectory/shared/shared.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'screens.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +22,7 @@ class Meals extends StatelessWidget {
       appBar: AppBar(
         title: Text("meals"),
         actions: <Widget>[
-          args.cafeteria.ownerId == user.uid
+          args.cafeteria.ownerId == user?.uid ?? ''
               ? IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () => Navigator.pushNamed(context, '/management',

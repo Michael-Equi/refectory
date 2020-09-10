@@ -43,9 +43,9 @@ class Profile extends StatelessWidget {
               FlatButton(
                 color: null,
                 onPressed: () {
-                  auth.signOut();
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
+                  auth.signOut();
                 },
                 child: Container(
                   child: Text(

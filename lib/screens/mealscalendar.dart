@@ -46,7 +46,7 @@ class _MealsCalendarState extends State<MealsCalendar> {
     final selelctedDate =
         Provider.of<ValueNotifier<DateTime>>(context, listen: false);
 
-    print('CALLBACK: _onDaySelected');
+    // print('CALLBACK: _onDaySelected');
     setState(() {
       selelctedDate.value = day;
       _selectedEvents = events;
@@ -55,12 +55,12 @@ class _MealsCalendarState extends State<MealsCalendar> {
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
+    // print('CALLBACK: _onVisibleDaysChanged');
   }
 
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onCalendarCreated');
+    // print('CALLBACK: _onCalendarCreated');
   }
 
   // Simple TableCalendar configuration (using Styles)

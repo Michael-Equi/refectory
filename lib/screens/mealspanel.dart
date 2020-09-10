@@ -45,7 +45,7 @@ class _MealsPanelState extends State<MealsPanel> {
               .streamData(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const CircularProgressIndicator();
-            bool isOwner = user.uid == snapshot.data.ownerId;
+            bool isOwner = (user?.uid ?? '') == snapshot.data.ownerId;
             return StreamBuilder(
                 stream: Firestore.instance
                     .collection('cafeterias')
@@ -205,13 +205,13 @@ class MealCard extends StatelessWidget {
                                 .collection('meals')
                                 .document(mealId)
                                 .updateData({
-                              'ratings': {user.uid: v}
+                              'ratings': {user?.uid: v}
                             });
                           },
                           starCount: 5,
                           rating: snapshot.data.ratings == null
                               ? 0
-                              : snapshot.data.ratings[user.uid] ?? 0,
+                              : snapshot.data.ratings[user?.uid] ?? 0,
                           size: 25.0,
                           isReadOnly: false,
                           color: Colors.green,
@@ -224,20 +224,20 @@ class MealCard extends StatelessWidget {
                           child: Icon(
                             FontAwesomeIcons.archive,
                             color:
-                                (snapshot.data.savers ?? []).contains(user.uid)
+                                (snapshot.data.savers ?? []).contains(user?.uid)
                                     ? Colors.grey[90]
                                     : Colors.grey,
                           ),
                           onPressed: () {
                             if ((snapshot.data.savers ?? [])
-                                .contains(user.uid)) {
+                                .contains(user?.uid)) {
                               Firestore.instance
                                   .collection('cafeterias')
                                   .document(cafeteriaId)
                                   .collection('meals')
                                   .document(mealId)
                                   .updateData({
-                                'savers': FieldValue.arrayRemove([user.uid])
+                                'savers': FieldValue.arrayRemove([user?.uid])
                               });
                             } else {
                               Firestore.instance
@@ -246,7 +246,7 @@ class MealCard extends StatelessWidget {
                                   .collection('meals')
                                   .document(mealId)
                                   .updateData({
-                                'savers': FieldValue.arrayUnion([user.uid])
+                                'savers': FieldValue.arrayUnion([user?.uid])
                               });
                             }
                           }),
